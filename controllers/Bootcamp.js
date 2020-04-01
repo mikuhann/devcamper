@@ -1,3 +1,5 @@
+const Bootcamp = require('../models/Bootcamp');
+
 module.exports = {
   getBootcamps: async (req, res) => {
     return res.status(200).json({
@@ -14,10 +16,13 @@ module.exports = {
     });
   },
   addBootcamp: async (req, res) => {
-    return res.status(200).json({
+    const newBootcamp = await Bootcamp.create(req.body);
+
+    return res.status(201).json({
       success: true,
-      msg: 'Create new bootcamp',
-    });
+      message: 'New bootcamp have created',
+      payload: newBootcamp,
+    })
   },
   updateBootcamp: async (req, res) => {
     const { id } = req.params;
