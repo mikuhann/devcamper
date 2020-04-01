@@ -35,5 +35,4 @@ module.exports = {
       msg: `Delete bootcamp with ${id}`,
     });
   }
-
-}
+};
