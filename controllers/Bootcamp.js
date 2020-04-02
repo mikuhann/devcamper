@@ -1,4 +1,5 @@
 const Bootcamp = require('../models/Bootcamp');
+const { ErrorResponse } = require('../helpers/ErrorHandler');
 const ErrorMessage = require('../helpers/ErrorMessage');
 
 module.exports = {
@@ -15,13 +16,9 @@ module.exports = {
 
     const bootcamp = await Bootcamp.findById(id);
 
-    if (!bootcamp || bootcamp.kind === 'ObjectId') {
-      return res.status(400).json({
-        success: false,
-        msg: ErrorMessage('bootcamp', id),
-      })
+    if (!bootcamp) {
+      throw new ErrorResponse(ErrorMessage('bootcamp', id), 404);
     }
-
 
     return res.status(200).json({
       success: true,
@@ -45,10 +42,7 @@ module.exports = {
     });
 
     if (!updatedBootcamp) {
-      return res.status(400).json({
-        success: false,
-        msg: ErrorMessage('bootcamp', id),
-      })
+      throw new ErrorResponse(ErrorMessage('bootcamp', id), 404);
     }
 
     return res.status(200).json({
@@ -62,10 +56,7 @@ module.exports = {
     const deletedBootcamp = await Bootcamp.findByIdAndDelete(id);
 
     if (!deletedBootcamp) {
-      return res.status(400).json({
-        success: false,
-        msg: ErrorMessage('bootcamp', id),
-      })
+      throw new ErrorResponse(ErrorMessage('bootcamp', id), 404);
     }
 
     return res.status(200).json({
