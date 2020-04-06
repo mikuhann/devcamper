@@ -8,6 +8,8 @@ class ErrorResponse extends Error {
 const errorHandler = (err, req, res, next) => {
   let error = { ...err };
 
+  error.message = err.message;
+
   if (err.name === 'CastError') {
     const message = `Provide a valid object id value`;
 
