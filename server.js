@@ -3,10 +3,11 @@ const dotenv = require('dotenv');
 const morgan = require('morgan');
 const colors = require('colors');
 
+dotenv.config({ path: './config/config.env' });
+
 const routes = require('./routes');
 const connectDB = require('./helpers/ConnectMongo');
 
-dotenv.config({ path: './config/config.env' });
 
 connectDB();
 

@@ -48,7 +48,7 @@ module.exports = {
     return res.status(200).json({
       success: true,
       payload: updatedBootcamp,
-    });
+  });
   },
   deleteBootcamp: async (req, res) => {
     const { id } = req.params;
