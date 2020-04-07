@@ -1,0 +1,205 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0",
+    "title": "Devcamper API",
+    "description": "Devcamper API description"
+  },
+  "host": "localhost:5000",
+  "basePath": "/api/v1/",
+  "tags": [
+    {
+      "name": "Bootcamps",
+      "description": "CRUD operations with bootcamps"
+    }
+  ],
+  "consumes": ["application/json"],
+  "produces": ["applicaiton/json"],
+  "paths": {
+    "/bootcamps": {
+      "get": {
+        "tags": ["Bootcamps"],
+        "summary": "Get all bootcamps",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      },
+      "post": {
+        "parameters": [
+          {
+            "name": "bootcamp",
+            "in": "body",
+            "description": "Bootcamp schema",
+            "schema": {
+              "$ref": "#/definitions/Bootcamp"
+            }
+          }
+        ],
+        "tags": ["Bootcamps"],
+        "summary": "Create bootcamp",
+        "responses": {
+          "201": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Duplicate field value entered"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/bootcamps/{id}": {
+      "get": {
+        "tags": ["Bootcamps"],
+        "summary": "Get bootcamp by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Bootcamp ID",
+            "pattern": "^[0-9a-fA-F]{24}$",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "404":{
+            "description": "Not found"
+          },
+          "400": {
+            "description": "Invalid ID"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Bootcamps"],
+        "summary": "Edit bootcamp by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Bootcamp ID",
+            "pattern": "^[0-9a-fA-F]{24}$",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "Edited bootcamp",
+            "description": "Bootcamp schema",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Bootcamp"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "404":{
+            "description": "Not found"
+          },
+          "400": {
+            "description": "Invalid ID"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Bootcamps"],
+        "summary": "Delete bootcamp by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Bootcamp ID",
+            "pattern": "^[0-9a-fA-F]{24}$",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "404":{
+            "description": "Not found"
+          },
+          "400": {
+            "description": "Invalid ID"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Bootcamp": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "website": {
+          "type": "string",
+          "format": "hostname",
+          "pattern": "https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "pattern": "^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$"
+        },
+        "address": {
+          "type": "string",
+          "format": "address"
+        },
+        "careers": {
+          "type": "string",
+          "enum": ["Web Development", "Mobile Development", "UI/UX", "Data Science", "Business", "Other"],
+          "default": "Web Development"
+        },
+        "housing": {
+          "type": "boolean",
+          "default": false
+        },
+        "jobAssistance":{
+          "type": "boolean",
+          "default": false
+        },
+        "jobGuarantee": {
+          "type": "boolean",
+          "default": false
+        },
+        "acceptGi": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "required": ["name", "description"]
+    }
+  }
+}

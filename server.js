@@ -8,7 +8,6 @@ dotenv.config({ path: './config/config.env' });
 const routes = require('./routes');
 const connectDB = require('./helpers/ConnectMongo');
 
-
 connectDB();
 
 const app = express();
