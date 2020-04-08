@@ -4,7 +4,15 @@ const ErrorMessage = require('../helpers/ErrorMessage');
 
 module.exports = {
   getBootcamps: async (req, res) => {
-    const bootcamps = await Bootcamp.find();
+    let queryStr = JSON.stringify(req.query);
+
+    queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, (match) => `$${match}`);
+
+    const bootcamps = await Bootcamp.find(JSON.parse(queryStr));
+
+    if (bootcamps.length === 0) {
+      throw new ErrorResponse('There is no bootcamps with given params', 404);
+    }
 
     return res.status(200).json({
       success: true,
