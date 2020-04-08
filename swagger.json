@@ -152,6 +152,39 @@
           }
         }
       }
+    },
+    "/bootcamps/radius/{zipcode}/{distance}": {
+      "get": {
+        "tags": ["Bootcamps"],
+        "summary": "Get bootcamps by radius",
+        "parameters": [
+          {
+            "name": "zipcode",
+            "in": "path",
+            "description": "Zone zipcode",
+            "type": "number",
+            "required": true
+          },
+          {
+            "name": "distance",
+            "in": "path",
+            "description": "Distance from point",
+            "type": "number",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "404":{
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
     }
   },
   "definitions": {

@@ -1,6 +1,8 @@
 const Bootcamp = require('../models/Bootcamp');
 const { ErrorResponse } = require('../helpers/ErrorHandler');
 const ErrorMessage = require('../helpers/ErrorMessage');
+const geocoder = require('../helpers/Geocoder');
+const earthRadius = require('../constants/EarthRadius');
 
 module.exports = {
   getBootcamps: async (req, res) => {
@@ -31,6 +33,29 @@ module.exports = {
     return res.status(200).json({
       success: true,
       payload: bootcamp,
+    });
+  },
+  getBootcampsWithGeoData: async (req, res) => {
+    const { zipcode, distance } = req.params;
+
+    const location = await geocoder.geocode(zipcode);
+
+    const { latitude, longitude } = location[0];
+
+    const radius = distance/earthRadius.miles;
+
+    const bootcamps = await Bootcamp.find({
+      location: { $geoWithin: { $centerSphere: [[longitude, latitude], radius] } }
+    });
+
+    if (bootcamps.length === 0) {
+      throw new ErrorResponse('No bootcamp in this area', 404);
+    }
+
+    return res.status(200).json({
+      success: true,
+      count: bootcamps.length,
+      payload: bootcamps,
     });
   },
   addBootcamp: async (req, res) => {
