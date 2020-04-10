@@ -20,6 +20,20 @@
       "get": {
         "tags": ["Bootcamps"],
         "summary": "Get all bootcamps",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "select",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "sort",
+            "type": "string",
+            "required": false
+          }
+        ],
         "responses": {
           "200": {
             "description": "Success"
