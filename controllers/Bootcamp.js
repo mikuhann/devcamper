@@ -6,11 +6,22 @@ const earthRadius = require('../constants/EarthRadius');
 
 module.exports = {
   getBootcamps: async (req, res) => {
-    let queryStr = JSON.stringify(req.query);
+    let selectFields, sortFields;
+    const { sort, select, ...filter } = req.query;
+
+    if (select) {
+      selectFields = select.split(',').join(' ');
+    }
+
+    if (sort) {
+      sortFields = sort.split(',').join(' ');
+    }
+
+    let queryStr = JSON.stringify(filter);
 
     queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, (match) => `$${match}`);
 
-    const bootcamps = await Bootcamp.find(JSON.parse(queryStr));
+    const bootcamps = await Bootcamp.find(JSON.parse(queryStr)).select(selectFields).sort(sortFields || 'name');
 
     if (bootcamps.length === 0) {
       throw new ErrorResponse('There is no bootcamps with given params', 404);
