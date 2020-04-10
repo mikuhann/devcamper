@@ -32,6 +32,19 @@
             "name": "sort",
             "type": "string",
             "required": false
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "type": "number",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "type": "number",
+            "required": false,
+            "default": 25
           }
         ],
         "responses": {
