@@ -50,7 +50,8 @@ module.exports = {
       .select(selectFields)
       .sort(sortFields || 'name')
       .skip(startIndex)
-      .limit(currentLimit);
+      .limit(currentLimit)
+      .populate('courses');
 
     if (bootcamps.length === 0) {
       throw new ErrorResponse('There is no bootcamps with given params', 404);
