@@ -144,11 +144,13 @@ module.exports = {
   deleteBootcamp: async (req, res) => {
     const { id } = req.params;
 
-    const deletedBootcamp = await Bootcamp.findByIdAndDelete(id);
+    const deletedBootcamp = await Bootcamp.findById(id);
 
     if (!deletedBootcamp) {
       throw new ErrorResponse(ErrorMessage('bootcamp', id), 404);
     }
+
+    await deletedBootcamp.remove();
 
     return res.status(200).json({
       success: true,
