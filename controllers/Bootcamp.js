@@ -1,4 +1,5 @@
 const Bootcamp = require('../models/Bootcamp');
+const Course = require('../models/Course');
 const { ErrorResponse } = require('../helpers/ErrorHandler');
 const ErrorMessage = require('../helpers/ErrorMessage');
 const geocoder = require('../helpers/Geocoder');
@@ -74,6 +75,21 @@ module.exports = {
     return res.status(200).json({
       success: true,
       payload: bootcamp,
+    });
+  },
+  getCoursesByBootcampId: async (req, res) => {
+    const { bootcampId } = req.params;
+
+    const courses = await Course.find({ bootcamp: bootcampId });
+
+    if (courses.length === 0) {
+      throw new ErrorResponse('No courses found for this bootcamp', 404);
+    }
+
+    return res.status(200).json({
+      success: true,
+      count: courses.length,
+      payload: courses,
     });
   },
   getBootcampsWithGeoData: async (req, res) => {

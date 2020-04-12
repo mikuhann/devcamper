@@ -11,6 +11,10 @@
     {
       "name": "Bootcamps",
       "description": "CRUD operations with bootcamps"
+    },
+    {
+      "name": "Courses",
+      "description": "CRUD operations with courses"
     }
   ],
   "consumes": ["application/json"],
@@ -206,6 +210,53 @@
           },
           "404":{
             "description": "Not found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/bootcamps/{bootcampId}/courses": {
+      "get": {
+        "tags": [
+          "Bootcamps"
+        ],
+        "summary": "Get all courses for bootcamp by bootcamp Id",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "bootcampId",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "400": {
+            "description": "Invalid ID"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/courses": {
+      "get": {
+        "tags": ["Courses"],
+        "summary": "Get all courses",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "Not Found"
           },
           "500": {
             "description": "Server Error"
