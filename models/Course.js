@@ -30,12 +30,12 @@ const CourseSchema = new mongoose.Schema({
   },
   scholarshipAvailable: {
     type: Boolean,
-    default: false
+    default: false,
   },
   createdAt: {
     type: Date,
     default: Date.now,
-  }
+  },
 });
 
 module.exports = mongoose.model('Course', CourseSchema);

@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const colors = require('colors');
 const dotenv = require('dotenv');
 
-dotenv.config({ path: '../config/config.env'});
+dotenv.config({ path: '../config/config.env' });
 
 const Bootcamps = require('../models/Bootcamp');
 const Courses = require('../models/Course');
@@ -40,7 +40,7 @@ const seedData = async () => {
 
     process.exit();
   } catch (e) {
-    console.log(e.message)
+    console.log(e.message);
   }
 };
 
