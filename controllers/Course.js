@@ -19,4 +19,21 @@ module.exports = {
       payload: courses,
     });
   },
+  getCourse: async (req, res) => {
+    const { id } = req.params;
+
+    const course = await Course.findById(id).populate({
+      path: 'bootcamp',
+      select: 'name description',
+    });
+
+    if (!course) {
+      throw new ErrorResponse(ErrorMessage('course', id), 404);
+    }
+
+    return res.status(200).json({
+      success: true,
+      payload: course,
+    });
+  },
 };
