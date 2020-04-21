@@ -3,6 +3,8 @@ const CourseController = require('../controllers/Course');
 const { asyncMiddleware } = require('../middlewares/AsyncMiddleware');
 
 CourseRouter.route('/').get(asyncMiddleware(CourseController.getCourses));
-CourseRouter.route('/:id').get(asyncMiddleware(CourseController.getCourse));
+CourseRouter.route('/:id')
+  .get(asyncMiddleware(CourseController.getCourse))
+  .put(asyncMiddleware(CourseController.updateCourse));
 
 module.exports = CourseRouter;

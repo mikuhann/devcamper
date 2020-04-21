@@ -328,6 +328,43 @@
             "description": "Server Error"
           }
         }
+      },
+      "put": {
+        "tags": ["Courses"],
+        "summary": "Edit course by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Course ID",
+            "pattern": "^[0-9a-fA-F]{24}$",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "Edited Course",
+            "description": "Course schema",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Course"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid ID"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
       }
     }
   },
