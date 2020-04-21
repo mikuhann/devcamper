@@ -1,4 +1,5 @@
 const Bootcamp = require('../models/Bootcamp');
+const Course = require('../models/Course');
 const { ErrorResponse } = require('../helpers/ErrorHandler');
 const ErrorMessage = require('../helpers/ErrorMessage');
 const geocoder = require('../helpers/Geocoder');
@@ -49,7 +50,8 @@ module.exports = {
       .select(selectFields)
       .sort(sortFields || 'name')
       .skip(startIndex)
-      .limit(currentLimit);
+      .limit(currentLimit)
+      .populate('courses');
 
     if (bootcamps.length === 0) {
       throw new ErrorResponse('There is no bootcamps with given params', 404);
@@ -74,6 +76,44 @@ module.exports = {
     return res.status(200).json({
       success: true,
       payload: bootcamp,
+    });
+  },
+  getCoursesByBootcampId: async (req, res) => {
+    const { bootcampId } = req.params;
+
+    const courses = await Course.find({ bootcamp: bootcampId });
+
+    if (courses.length === 0) {
+      throw new ErrorResponse('No courses found for this bootcamp', 404);
+    }
+
+    return res.status(200).json({
+      success: true,
+      count: courses.length,
+      payload: courses,
+    });
+  },
+  addCourseToBootcamp: async (req, res) => {
+    const { bootcampId } = req.params;
+
+    req.body.bootcamp = bootcampId;
+
+    const bootcamp = await Bootcamp.findById(bootcampId);
+
+    if (!bootcamp) {
+      throw new ErrorResponse(ErrorMessage('bootcamp', bootcampId), 404);
+    }
+
+    let course = await Course.create(req.body);
+
+    course = await course.populate({
+      path: 'bootcamp',
+      select: 'name description',
+    }).execPopulate();
+
+    return res.status(200).json({
+      success: true,
+      payload: course,
     });
   },
   getBootcampsWithGeoData: async (req, res) => {
@@ -127,11 +167,13 @@ module.exports = {
   deleteBootcamp: async (req, res) => {
     const { id } = req.params;
 
-    const deletedBootcamp = await Bootcamp.findByIdAndDelete(id);
+    const deletedBootcamp = await Bootcamp.findById(id);
 
     if (!deletedBootcamp) {
       throw new ErrorResponse(ErrorMessage('bootcamp', id), 404);
     }
+
+    await deletedBootcamp.remove();
 
     return res.status(200).json({
       success: true,
