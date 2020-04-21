@@ -263,6 +263,34 @@
           }
         }
       }
+    },
+    "/courses/{id}": {
+      "get": {
+        "tags": ["Courses"],
+        "summary": "Get single course by ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid Id"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
     }
   },
   "definitions": {
