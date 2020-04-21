@@ -34,7 +34,7 @@ const seedData = async () => {
   try {
     await Bootcamps.create(bootcamps);
 
-    await Courses.create(courses);
+    // await Courses.create(courses);
 
     console.log('Data seeded...'.green);
 
