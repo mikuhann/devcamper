@@ -53,4 +53,20 @@ module.exports = {
       payload: updatedCourse,
     });
   },
+  deleteCourse: async (req, res) => {
+    const { id } = req.params;
+
+    const course = await Course.findById(id);
+
+    if (!course) {
+      throw new ErrorResponse(ErrorMessage('course', id), 404);
+    }
+
+    await course.remove();
+
+    return res.status(200).json({
+      success: true,
+      payload: {},
+    });
+  },
 };

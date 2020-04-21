@@ -365,6 +365,34 @@
             "description": "Server Error"
           }
         }
+      },
+      "delete": {
+        "tags": ["Courses"],
+        "summary": "Delete course by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Course ID",
+            "pattern": "^[0-9a-fA-F]{24}$",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid ID"
+          },
+          "404":{
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
       }
     }
   },
