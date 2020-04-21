@@ -228,7 +228,9 @@
             "in": "path",
             "name": "bootcampId",
             "type": "string",
-            "required": true
+            "required": true,
+            "description": "Bootcamp ID",
+            "pattern": "^[0-9a-fA-F]{24}$"
           }
         ],
         "responses": {
@@ -240,6 +242,42 @@
           },
           "400": {
             "description": "Invalid ID"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      },
+      "post": {
+        "parameters": [
+          {
+            "name": "course",
+            "in": "body",
+            "description": "Course schema",
+            "schema": {
+              "$ref": "#/definitions/Course"
+            }
+          },
+          {
+            "in": "path",
+            "name": "bootcampId",
+            "type": "string",
+            "required": true,
+            "description": "Bootcamp ID",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          }
+        ],
+        "tags": ["Bootcamps"],
+        "summary": "Add course to bootcamp by ID",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid Id"
+          },
+          "404": {
+            "description": "Not Found"
           },
           "500": {
             "description": "Server Error"
@@ -342,6 +380,35 @@
         }
       },
       "required": ["name", "description"]
+    },
+    "Course": {
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "weeks": {
+          "type": "number",
+          "default": 5
+        },
+        "tuition": {
+          "type": "number",
+          "default": 5000
+        },
+        "minimumSkill": {
+          "type": "string",
+          "enum": [
+            "beginner", "intermediate", "advanced"
+          ],
+          "default": "beginner"
+        },
+        "scholarhipsAvailable": {
+          "type": "boolean",
+          "default": false
+        }
+      }
     }
   }
 }

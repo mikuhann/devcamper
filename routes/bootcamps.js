@@ -9,9 +9,9 @@ BootcampRouter.route('/:id')
   .get(asyncMiddleware(BootcampController.getBootcamp))
   .put(asyncMiddleware(BootcampController.updateBootcamp))
   .delete(asyncMiddleware(BootcampController.deleteBootcamp));
-BootcampRouter.route('/:bootcampId/courses').get(
-  asyncMiddleware(BootcampController.getCoursesByBootcampId)
-);
+BootcampRouter.route('/:bootcampId/courses')
+  .get(asyncMiddleware(BootcampController.getCoursesByBootcampId))
+  .post(asyncMiddleware(BootcampController.addCourseToBootcamp));
 BootcampRouter.route('/radius/:zipcode/:distance').get(
   asyncMiddleware(BootcampController.getBootcampsWithGeoData)
 );

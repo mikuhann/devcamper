@@ -93,6 +93,29 @@ module.exports = {
       payload: courses,
     });
   },
+  addCourseToBootcamp: async (req, res) => {
+    const { bootcampId } = req.params;
+
+    req.body.bootcamp = bootcampId;
+
+    const bootcamp = await Bootcamp.findById(bootcampId);
+
+    if (!bootcamp) {
+      throw new ErrorResponse(ErrorMessage('bootcamp', bootcampId), 404);
+    }
+
+    let course = await Course.create(req.body);
+
+    course = await course.populate({
+      path: 'bootcamp',
+      select: 'name description',
+    }).execPopulate();
+
+    return res.status(200).json({
+      success: true,
+      payload: course,
+    });
+  },
   getBootcampsWithGeoData: async (req, res) => {
     const { zipcode, distance } = req.params;
 
