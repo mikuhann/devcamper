@@ -15,5 +15,7 @@ BootcampRouter.route('/:bootcampId/courses')
 BootcampRouter.route('/radius/:zipcode/:distance').get(
   asyncMiddleware(BootcampController.getBootcampsWithGeoData)
 );
+BootcampRouter.route('/:id/photo')
+  .put(asyncMiddleware(BootcampController.uploadBootcampImage));
 
 module.exports = BootcampRouter;

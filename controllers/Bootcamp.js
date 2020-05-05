@@ -179,5 +179,25 @@ module.exports = {
       success: true,
       payload: {},
     });
+  },
+  uploadBootcampImage: async (req, res) => {
+    const { id } = req.params;
+    const { file } = req.files;
+
+    const bootcamp = await Bootcamp.findById(id);
+
+    if (!bootcamp) {
+      throw new ErrorResponse(ErrorMessage('bootcamp', id), 404);
+    }
+
+    if (!req.files) {
+      throw new ErrorResponse('Please upload a file', 400);
+    }
+
+    if (!file.mimetype.startsWith('image')) {
+      throw new ErrorResponse('Please upload an image file', 415);
+    }
+
+    console.log(req.files)
   }
 };
