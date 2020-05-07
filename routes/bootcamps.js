@@ -1,9 +1,14 @@
 const BootcampRouter = require('express').Router();
 const BootcampController = require('../controllers/Bootcamp');
 const { asyncMiddleware } = require('../middlewares/AsyncMiddleware');
+const QueryMiddleware = require('../middlewares/QueryMiddleware');
+const Bootcamp = require('../models/Bootcamp');
 
 BootcampRouter.route('/')
-  .get(asyncMiddleware(BootcampController.getBootcamps))
+  .get(
+    QueryMiddleware(Bootcamp, 'courses'),
+    asyncMiddleware(BootcampController.getBootcamps)
+  )
   .post(asyncMiddleware(BootcampController.addBootcamp));
 BootcampRouter.route('/:id')
   .get(asyncMiddleware(BootcampController.getBootcamp))
@@ -15,7 +20,8 @@ BootcampRouter.route('/:bootcampId/courses')
 BootcampRouter.route('/radius/:zipcode/:distance').get(
   asyncMiddleware(BootcampController.getBootcampsWithGeoData)
 );
-BootcampRouter.route('/:id/photo')
-  .put(asyncMiddleware(BootcampController.uploadBootcampImage));
+BootcampRouter.route('/:id/photo').put(
+  asyncMiddleware(BootcampController.uploadBootcampImage)
+);
 
 module.exports = BootcampRouter;

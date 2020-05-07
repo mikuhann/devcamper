@@ -8,62 +8,9 @@ const earthRadius = require('../constants/EarthRadius');
 
 module.exports = {
   getBootcamps: async (req, res) => {
-    let selectFields, sortFields;
-    const { sort, select, page, limit, ...filter } = req.query;
+    const { queryResults } = res;
 
-    if (select) {
-      selectFields = select.split(',').join(' ');
-    }
-
-    if (sort) {
-      sortFields = sort.split(',').join(' ');
-    }
-
-    const currentPage = parseInt(page, 10) || 1;
-    const currentLimit = parseInt(limit, 10) || 25;
-    const startIndex = (currentPage - 1) * currentLimit;
-    const endIndex = currentPage * currentLimit;
-    const total = await Bootcamp.countDocuments();
-
-    const pagination = {};
-
-    if (endIndex < total) {
-      pagination.next = {
-        page: currentPage + 1,
-        limit: currentLimit,
-      }
-    }
-
-    if (startIndex > 0) {
-      pagination.prev = {
-        page: currentPage - 1,
-        limit: currentLimit
-      }
-    }
-
-
-    let queryStr = JSON.stringify(filter);
-
-    queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, (match) => `$${match}`);
-
-    const bootcamps = await Bootcamp
-      .find(JSON.parse(queryStr))
-      .select(selectFields)
-      .sort(sortFields || 'name')
-      .skip(startIndex)
-      .limit(currentLimit)
-      .populate('courses');
-
-    if (bootcamps.length === 0) {
-      throw new ErrorResponse('There is no bootcamps with given params', 404);
-    }
-
-    return res.status(200).json({
-      success: true,
-      count: bootcamps.length,
-      pagination,
-      payload: bootcamps,
-    });
+    return res.status(200).json(queryResults);
   },
   getBootcamp: async (req, res) => {
     const { id } = req.params;
@@ -107,10 +54,12 @@ module.exports = {
 
     let course = await Course.create(req.body);
 
-    course = await course.populate({
-      path: 'bootcamp',
-      select: 'name description',
-    }).execPopulate();
+    course = await course
+      .populate({
+        path: 'bootcamp',
+        select: 'name description',
+      })
+      .execPopulate();
 
     return res.status(200).json({
       success: true,
@@ -124,10 +73,12 @@ module.exports = {
 
     const { latitude, longitude } = location[0];
 
-    const radius = distance/earthRadius.miles;
+    const radius = distance / earthRadius.miles;
 
     const bootcamps = await Bootcamp.find({
-      location: { $geoWithin: { $centerSphere: [[longitude, latitude], radius] } }
+      location: {
+        $geoWithin: { $centerSphere: [[longitude, latitude], radius] },
+      },
     });
 
     if (bootcamps.length === 0) {
@@ -146,7 +97,7 @@ module.exports = {
     return res.status(201).json({
       success: true,
       payload: newBootcamp,
-    })
+    });
   },
   updateBootcamp: async (req, res) => {
     const { id } = req.params;
@@ -163,7 +114,7 @@ module.exports = {
     return res.status(200).json({
       success: true,
       payload: updatedBootcamp,
-  });
+    });
   },
   deleteBootcamp: async (req, res) => {
     const { id } = req.params;

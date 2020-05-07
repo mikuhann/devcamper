@@ -4,20 +4,9 @@ const ErrorMessage = require('../helpers/ErrorMessage');
 
 module.exports = {
   getCourses: async (req, res) => {
-    const courses = await Course.find().populate({
-      path: 'bootcamp',
-      select: 'name description',
-    });
+    const { queryResults } = res;
 
-    if (courses.length === 0) {
-      throw new ErrorResponse('No courses found', 404);
-    }
-
-    return res.status(200).json({
-      success: true,
-      count: courses.length,
-      payload: courses,
-    });
+    return res.status(200).json(queryResults);
   },
   getCourse: async (req, res) => {
     const { id } = req.params;
