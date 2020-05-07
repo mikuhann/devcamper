@@ -1,3 +1,4 @@
+const path = require('path');
 const Bootcamp = require('../models/Bootcamp');
 const Course = require('../models/Course');
 const { ErrorResponse } = require('../helpers/ErrorHandler');
@@ -179,5 +180,47 @@ module.exports = {
       success: true,
       payload: {},
     });
-  }
+  },
+  uploadBootcampImage: async (req, res) => {
+    const { id } = req.params;
+
+    const bootcamp = await Bootcamp.findById(id);
+
+    if (!bootcamp) {
+      throw new ErrorResponse(ErrorMessage('bootcamp', id), 404);
+    }
+
+    if (!req.files) {
+      throw new ErrorResponse('Please upload a file', 400);
+    }
+
+    const { file } = req.files;
+
+    if (!file.mimetype.startsWith('image')) {
+      throw new ErrorResponse('Please upload an image file', 415);
+    }
+
+    if (file.size > process.env.FILE_UPLOAD_MAX_SIZE) {
+      throw new ErrorResponse(`Please upload an image less than 1 Mb`, 400);
+    }
+
+    file.name = `photo_${bootcamp._id}${path.parse(file.name).ext}`;
+
+    file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async (err) => {
+      if (err) {
+        console.error(err);
+
+        throw new ErrorResponse(`Problem with file upload`, 500);
+      }
+
+      await Bootcamp.findByIdAndUpdate(id, {
+        photo: file.name,
+      });
+
+      return res.status(200).json({
+        success: true,
+        data: file.name,
+      });
+    });
+  },
 };

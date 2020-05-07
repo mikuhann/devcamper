@@ -285,6 +285,46 @@
         }
       }
     },
+    "/bootcamps/{bootcampId}/photo": {
+      "put": {
+        "tags": ["Bootcamps"],
+        "summary": "Upload a bootcamp image",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "bootcampId",
+            "type": "string",
+            "required": true,
+            "description": "Bootcamp ID",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          {
+            "in": "formData",
+            "name": "file",
+            "type": "file",
+            "required": true,
+            "description": "File to upload"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "400": {
+            "description": "File is not upload or wrong size"
+          },
+          "415": {
+            "description": "File is not image"
+          },
+          "500": {
+            "description": "Server Error or Problem with file upload"
+          }
+        }
+      }
+    },
     "/courses": {
       "get": {
         "tags": ["Courses"],
