@@ -31,23 +31,24 @@ module.exports = {
       pagination.next = {
         page: currentPage + 1,
         limit: currentLimit,
-      }
+      };
     }
 
     if (startIndex > 0) {
       pagination.prev = {
         page: currentPage - 1,
-        limit: currentLimit
-      }
+        limit: currentLimit,
+      };
     }
-
 
     let queryStr = JSON.stringify(filter);
 
-    queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, (match) => `$${match}`);
+    queryStr = queryStr.replace(
+      /\b(gt|gte|lt|lte|in)\b/g,
+      (match) => `$${match}`
+    );
 
-    const bootcamps = await Bootcamp
-      .find(JSON.parse(queryStr))
+    const bootcamps = await Bootcamp.find(JSON.parse(queryStr))
       .select(selectFields)
       .sort(sortFields || 'name')
       .skip(startIndex)
@@ -107,10 +108,12 @@ module.exports = {
 
     let course = await Course.create(req.body);
 
-    course = await course.populate({
-      path: 'bootcamp',
-      select: 'name description',
-    }).execPopulate();
+    course = await course
+      .populate({
+        path: 'bootcamp',
+        select: 'name description',
+      })
+      .execPopulate();
 
     return res.status(200).json({
       success: true,
@@ -124,10 +127,12 @@ module.exports = {
 
     const { latitude, longitude } = location[0];
 
-    const radius = distance/earthRadius.miles;
+    const radius = distance / earthRadius.miles;
 
     const bootcamps = await Bootcamp.find({
-      location: { $geoWithin: { $centerSphere: [[longitude, latitude], radius] } }
+      location: {
+        $geoWithin: { $centerSphere: [[longitude, latitude], radius] },
+      },
     });
 
     if (bootcamps.length === 0) {
@@ -146,7 +151,7 @@ module.exports = {
     return res.status(201).json({
       success: true,
       payload: newBootcamp,
-    })
+    });
   },
   updateBootcamp: async (req, res) => {
     const { id } = req.params;
@@ -163,7 +168,7 @@ module.exports = {
     return res.status(200).json({
       success: true,
       payload: updatedBootcamp,
-  });
+    });
   },
   deleteBootcamp: async (req, res) => {
     const { id } = req.params;
