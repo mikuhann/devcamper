@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
@@ -16,6 +17,8 @@ const app = express();
 app.use(express.json());
 
 app.use(fileupload());
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
