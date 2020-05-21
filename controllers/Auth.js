@@ -12,8 +12,11 @@ module.exports = {
       role,
     });
 
+    const token = user.getSignedJWT();
+
     return res.status(200).json({
       success: true,
+      token,
     });
   },
 };
