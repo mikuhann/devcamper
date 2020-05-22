@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const { ErrorResponse } = require('../helpers/ErrorHandler');
+const sendTokenResponse = require('../helpers/TokenResponse');
 
 module.exports = {
   register: async (req, res) => {
@@ -12,12 +13,7 @@ module.exports = {
       role,
     });
 
-    const token = user.getSignedJWT();
-
-    return res.status(200).json({
-      success: true,
-      token,
-    });
+    sendTokenResponse(user, 201, res);
   },
   login: async (req, res) => {
     const { email, password } = req.body;
@@ -38,11 +34,6 @@ module.exports = {
       throw new ErrorResponse('Invalid credentials', 401);
     }
 
-    const token = user.getSignedJWT();
-
-    return res.status(200).json({
-      success: true,
-      token,
-    });
+    sendTokenResponse(user, 200, res);
   },
 };
