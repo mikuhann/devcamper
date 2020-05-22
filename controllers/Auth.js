@@ -41,10 +41,6 @@ module.exports = {
 
     const user = await User.findById(userId);
 
-    if (!user) {
-      throw new ErrorResponse('No user with that id', 404);
-    }
-
     return res.status(200).json({
       success: true,
       payload: user,

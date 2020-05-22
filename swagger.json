@@ -17,6 +17,13 @@
       "description": "CRUD operations with courses"
     }
   ],
+  "securityDefinitions": {
+    "Bearer": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
   "consumes": ["application/json"],
   "produces": ["applicaiton/json"],
   "paths": {
@@ -72,16 +79,27 @@
             "schema": {
               "$ref": "#/definitions/Bootcamp"
             }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "type": "string"
           }
         ],
         "tags": ["Bootcamps"],
         "summary": "Create bootcamp",
+        "security": [{
+          "Bearer": []
+        }],
         "responses": {
           "201": {
             "description": "Success"
           },
           "400": {
             "description": "Duplicate field value entered"
+          },
+          "401": {
+            "description": "Not authorized"
           },
           "500": {
             "description": "Server Error"
@@ -121,6 +139,9 @@
       "put": {
         "tags": ["Bootcamps"],
         "summary": "Edit bootcamp by ID",
+        "security": [{
+          "Bearer": []
+        }],
         "parameters": [
           {
             "name": "id",
@@ -138,6 +159,11 @@
             "schema": {
               "$ref": "#/definitions/Bootcamp"
             }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "type": "string"
           }
         ],
         "responses": {
@@ -146,6 +172,9 @@
           },
           "404":{
             "description": "Not found"
+          },
+          "401": {
+            "description": "Not authorized"
           },
           "400": {
             "description": "Invalid ID"
@@ -158,6 +187,9 @@
       "delete": {
         "tags": ["Bootcamps"],
         "summary": "Delete bootcamp by ID",
+        "security": [{
+          "Bearer": []
+        }],
         "parameters": [
           {
             "name": "id",
@@ -166,6 +198,11 @@
             "pattern": "^[0-9a-fA-F]{24}$",
             "type": "string",
             "required": true
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "type": "string"
           }
         ],
         "responses": {
@@ -177,6 +214,9 @@
           },
           "400": {
             "description": "Invalid ID"
+          },
+          "401": {
+            "description": "Not authorized"
           },
           "500": {
             "description": "Server Error"
@@ -265,16 +305,27 @@
             "required": true,
             "description": "Bootcamp ID",
             "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "type": "string"
           }
         ],
         "tags": ["Bootcamps"],
         "summary": "Add course to bootcamp by ID",
+        "security": [{
+          "Bearer": []
+        }],
         "responses": {
           "200": {
             "description": "Success"
           },
           "400": {
             "description": "Invalid Id"
+          },
+          "401": {
+            "description": "Not authorized"
           },
           "404": {
             "description": "Not Found"
@@ -289,6 +340,9 @@
       "put": {
         "tags": ["Bootcamps"],
         "summary": "Upload a bootcamp image",
+        "security": [{
+          "Bearer": []
+        }],
         "parameters": [
           {
             "in": "path",
@@ -304,6 +358,11 @@
             "type": "file",
             "required": true,
             "description": "File to upload"
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "type": "string"
           }
         ],
         "responses": {
@@ -312,6 +371,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "401": {
+            "description": "Not authorized"
           },
           "400": {
             "description": "File is not upload or wrong size"
@@ -372,6 +434,9 @@
       "put": {
         "tags": ["Courses"],
         "summary": "Edit course by ID",
+        "security": [{
+          "Bearer": []
+        }],
         "parameters": [
           {
             "name": "id",
@@ -389,6 +454,11 @@
             "schema": {
               "$ref": "#/definitions/Course"
             }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "type": "string"
           }
         ],
         "responses": {
@@ -397,6 +467,9 @@
           },
           "400": {
             "description": "Invalid ID"
+          },
+          "401": {
+            "description": "Not authorized"
           },
           "404": {
             "description": "Not found"
@@ -409,6 +482,9 @@
       "delete": {
         "tags": ["Courses"],
         "summary": "Delete course by ID",
+        "security": [{
+          "Bearer": []
+        }],
         "parameters": [
           {
             "name": "id",
@@ -417,6 +493,11 @@
             "pattern": "^[0-9a-fA-F]{24}$",
             "type": "string",
             "required": true
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "type": "string"
           }
         ],
         "responses": {
@@ -426,8 +507,92 @@
           "400": {
             "description": "Invalid ID"
           },
+          "401": {
+            "description": "Not authorized"
+          },
           "404":{
             "description": "Not found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": ["Authorization"],
+        "summary": "Register new user",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "description": "User schema",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "User created"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": ["Authorization"],
+        "summary": "User login",
+        "parameters": [
+          {
+            "name": "Credentials",
+            "in": "body",
+            "description": "Credentials schema",
+            "schema": {
+              "$ref": "#/definitions/Credentials"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "403": {
+            "description": "No email or password provided"
+          },
+          "401": {
+            "description": "Invalid credentials"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "security": [{
+          "Bearer": []
+        }],
+        "tags": ["Authorization"],
+        "summary": "Get current user",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Not authorized"
           },
           "500": {
             "description": "Server Error"
@@ -512,6 +677,40 @@
         "scholarhipsAvailable": {
           "type": "boolean",
           "default": false
+        }
+      }
+    },
+    "User": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "pattern": "^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$"
+        },
+        "password": {
+          "type": "string",
+          "minLength": 6
+        },
+        "role": {
+          "type": "string",
+          "enum": ["user", "publisher"],
+          "default": "user"
+        }
+      }
+    },
+    "Credentials":{
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email",
+          "pattern": "^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$"
+        },
+        "password": {
+          "type": "string",
+          "minLength": 6
         }
       }
     }
