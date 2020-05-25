@@ -12,9 +12,9 @@ const CheckOwnership = (model) => async (req, res, next) => {
   ) {
     next(
       new ErrorResponse(
-        `User with ID: ${req.user.id} isn't authorize to do this`
-      ),
-      401
+        `User with ID: ${req.user.id} isn't authorize to do this`,
+        401
+      )
     );
   }
 

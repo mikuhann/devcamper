@@ -31,7 +31,7 @@ BootcampRouter.route('/:id')
     CheckOwnership(Bootcamp),
     asyncMiddleware(BootcampController.deleteBootcamp)
   );
-BootcampRouter.route('/:bootcampId/courses')
+BootcampRouter.route('/:id/courses')
   .get(asyncMiddleware(BootcampController.getCoursesByBootcampId))
   .post(
     protectRoute,

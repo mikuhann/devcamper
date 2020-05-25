@@ -43,14 +43,15 @@ module.exports = {
     });
   },
   addCourseToBootcamp: async (req, res) => {
-    const { bootcampId } = req.params;
+    const { id } = req.params;
 
-    req.body.bootcamp = bootcampId;
+    req.body.bootcamp = id;
+    req.body.user = req.user.id;
 
-    const bootcamp = await Bootcamp.findById(bootcampId);
+    const bootcamp = await Bootcamp.findById(id);
 
     if (!bootcamp) {
-      throw new ErrorResponse(ErrorMessage('bootcamp', bootcampId), 404);
+      throw new ErrorResponse(ErrorMessage('bootcamp', id), 404);
     }
 
     let course = await Course.create(req.body);

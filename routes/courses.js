@@ -5,6 +5,7 @@ const Course = require('../models/Course');
 const QueryMiddleware = require('../middlewares/QueryMiddleware');
 const { protectRoute, checkRole } = require('../middlewares/Auth');
 const { roles } = require('../constants/Roles');
+const CheckOwnership = require('../middlewares/CheckOwnership');
 
 CourseRouter.route('/').get(
   QueryMiddleware(Course, { path: 'bootcamp', select: 'name description' }),
@@ -15,11 +16,13 @@ CourseRouter.route('/:id')
   .put(
     protectRoute,
     checkRole(roles.ADMIN, roles.PUBLISHER),
+    CheckOwnership(Course),
     asyncMiddleware(CourseController.updateCourse)
   )
   .delete(
     protectRoute,
     checkRole(roles.ADMIN, roles.PUBLISHER),
+    CheckOwnership(Course),
     asyncMiddleware(CourseController.deleteCourse)
   );
 
