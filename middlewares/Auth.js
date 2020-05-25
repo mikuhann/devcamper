@@ -31,6 +31,22 @@ const protectRoute = async (req, res, next) => {
   }
 };
 
+const checkRole = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      next(
+        new ErrorResponse(
+          `User role ${req.user.role} isn't authorized to access this route`,
+          403
+        )
+      );
+    }
+
+    next();
+  };
+};
+
 module.exports = {
   protectRoute,
+  checkRole,
 };
