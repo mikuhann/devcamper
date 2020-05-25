@@ -5,6 +5,7 @@ const QueryMiddleware = require('../middlewares/QueryMiddleware');
 const Bootcamp = require('../models/Bootcamp');
 const { protectRoute, checkRole } = require('../middlewares/Auth');
 const { roles } = require('../constants/Roles');
+const CheckOwnership = require('../middlewares/CheckOwnership');
 
 BootcampRouter.route('/')
   .get(
@@ -21,11 +22,13 @@ BootcampRouter.route('/:id')
   .put(
     protectRoute,
     checkRole(roles.ADMIN, roles.PUBLISHER),
+    CheckOwnership(Bootcamp),
     asyncMiddleware(BootcampController.updateBootcamp)
   )
   .delete(
     protectRoute,
     checkRole(roles.ADMIN, roles.PUBLISHER),
+    CheckOwnership(Bootcamp),
     asyncMiddleware(BootcampController.deleteBootcamp)
   );
 BootcampRouter.route('/:bootcampId/courses')
@@ -33,6 +36,7 @@ BootcampRouter.route('/:bootcampId/courses')
   .post(
     protectRoute,
     checkRole(roles.ADMIN, roles.PUBLISHER),
+    CheckOwnership(Bootcamp),
     asyncMiddleware(BootcampController.addCourseToBootcamp)
   );
 BootcampRouter.route('/radius/:zipcode/:distance').get(
@@ -42,6 +46,7 @@ BootcampRouter.route('/:id/photo').put(
   asyncMiddleware(
     protectRoute,
     checkRole(roles.ADMIN, roles.PUBLISHER),
+    CheckOwnership(Bootcamp),
     BootcampController.uploadBootcampImage
   )
 );
