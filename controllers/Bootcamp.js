@@ -5,6 +5,7 @@ const { ErrorResponse } = require('../helpers/ErrorHandler');
 const ErrorMessage = require('../helpers/ErrorMessage');
 const geocoder = require('../helpers/Geocoder');
 const earthRadius = require('../constants/EarthRadius');
+const { roles } = require('../constants/Roles');
 
 module.exports = {
   getBootcamps: async (req, res) => {
@@ -92,6 +93,17 @@ module.exports = {
     });
   },
   addBootcamp: async (req, res) => {
+    req.body.user = req.user.id;
+
+    const publishedBootcamp = await Bootcamp.findOne({ user: req.user });
+
+    if (publishedBootcamp && req.user.role !== roles.ADMIN) {
+      throw new ErrorResponse(
+        `User with ID: ${req.user.id} has already published bootcamp`,
+        400
+      );
+    }
+
     const newBootcamp = await Bootcamp.create(req.body);
 
     return res.status(201).json({
