@@ -7,6 +7,7 @@ dotenv.config({ path: '../config/config.env' });
 
 const Bootcamps = require('../models/Bootcamp');
 const Courses = require('../models/Course');
+const User = require('../models/User');
 
 const connectDB = async () => {
   try {
@@ -29,12 +30,17 @@ const bootcamps = JSON.parse(
 const courses = JSON.parse(
   fs.readFileSync(`${__dirname}/seeddata/courses.json`, 'utf-8')
 );
+const users = JSON.parse(
+  fs.readFileSync(`${__dirname}/seeddata/users.json`, 'utf-8')
+);
 
 const seedData = async () => {
   try {
     await Bootcamps.create(bootcamps);
 
     await Courses.create(courses);
+
+    await User.create(users);
 
     console.log('Data seeded...'.green);
 
@@ -49,6 +55,8 @@ const deleteSeedData = async () => {
     await Bootcamps.deleteMany();
 
     await Courses.deleteMany();
+
+    await User.deleteMany();
 
     console.log('Seed data removed'.red);
 
