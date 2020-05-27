@@ -114,7 +114,7 @@ module.exports = {
     user.password = password;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpire = undefined;
-
+    /* add to role new value 'admin', but we can fix that by validateBefore save*/
     await user.save();
 
     sendTokenResponse(user, 200, res);
