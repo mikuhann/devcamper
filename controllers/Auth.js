@@ -2,6 +2,7 @@ const User = require('../models/User');
 const { ErrorResponse } = require('../helpers/ErrorHandler');
 const sendTokenResponse = require('../helpers/TokenResponse');
 const sendEmail = require('../utils/SendEmail');
+const crypto = require('crypto');
 
 module.exports = {
   register: async (req, res) => {
@@ -60,7 +61,7 @@ module.exports = {
 
     const resetUrl = `${req.protocol}://${req.get(
       'host'
-    )}/api/v1/resetpassword/${resetToken}`;
+    )}/api/v1/auth/resetpassword/${resetToken}`;
 
     const message = `You are receiving this email because of you 
     (or someone else) has requested to reset a password. Please make a PUT 
@@ -87,5 +88,35 @@ module.exports = {
 
       throw new ErrorResponse('Email could not be sent', 500);
     }
+  },
+  resetPassword: async (req, res) => {
+    const { resetToken } = req.params;
+    const { password } = req.body;
+
+    const resetPasswordToken = crypto
+      .createHash('sha256')
+      .update(resetToken)
+      .digest('hex');
+
+    const user = await User.findOne({
+      resetPasswordToken,
+      resetPasswordExpire: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      throw new ErrorResponse('Invalid token', 400);
+    }
+
+    if (!password) {
+      throw new ErrorResponse('Input new password', 403);
+    }
+
+    user.password = password;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+
+    await user.save();
+
+    sendTokenResponse(user, 200, res);
   },
 };

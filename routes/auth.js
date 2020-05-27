@@ -16,4 +16,8 @@ AuthRouter.route('/forgotpassword').post(
   asyncMiddleware(AuthController.forgotPassword)
 );
 
+AuthRouter.route('/resetpassword/:resetToken').put(
+  asyncMiddleware(AuthController.resetPassword)
+);
+
 module.exports = AuthRouter;
