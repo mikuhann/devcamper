@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const { ErrorResponse } = require('../helpers/ErrorHandler');
 const sendTokenResponse = require('../helpers/TokenResponse');
+const sendEmail = require('../utils/SendEmail');
 
 module.exports = {
   register: async (req, res) => {
@@ -45,5 +46,46 @@ module.exports = {
       success: true,
       payload: user,
     });
+  },
+  forgotPassword: async (req, res) => {
+    const user = await User.findOne({ email: req.body.email });
+
+    if (!user) {
+      throw new ErrorResponse('No user with that email', 404);
+    }
+
+    const resetToken = user.getResetPasswordToken();
+
+    await user.save({ validateBeforeSave: false });
+
+    const resetUrl = `${req.protocol}://${req.get(
+      'host'
+    )}/api/v1/resetpassword/${resetToken}`;
+
+    const message = `You are receiving this email because of you 
+    (or someone else) has requested to reset a password. Please make a PUT 
+    request to: \n\n ${resetUrl}`;
+
+    try {
+      await sendEmail({
+        email: user.email,
+        subject: 'Password reset token',
+        message,
+      });
+
+      return res.status(200).json({
+        success: true,
+        payload: 'Email sent',
+      });
+    } catch (e) {
+      console.log(e);
+
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpire = undefined;
+
+      await user.save({ validateBeforeSave: false });
+
+      throw new ErrorResponse('Email could not be sent', 500);
+    }
   },
 };
